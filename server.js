@@ -6,7 +6,7 @@ let model = require('./api/models/model');
 let homeRoute = require('./api/routes/homeRoute')
 
 // define port
-let port = process.env.port || 3000;
+let port = process.env.PORT || 3000;
 
 //Connect to DATABASE
 db.connect((err) => {
