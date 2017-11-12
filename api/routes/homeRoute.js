@@ -34,7 +34,12 @@ router.get('/', (req, res) => {
 
     
   })
-}) 
+})
+
+//New Transaction route
+router.get('/new-transaction', (req, res) => {
+  res.render('addTransactions.ejs');
+})
 
 
 module.exports = router;

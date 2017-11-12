@@ -16,12 +16,15 @@
   <body>
     <!--Top Bar-->
     <%- include ../partials/header.ejs %>
+    
+    <!-- Side Bar -->
+    <%- include ../partials/sidebar.ejs %>
 
     <div class="container-fluid" id="content">
       <!-- Overview DIV-->
       
       <div class="card container animated slideInLeft" id="overview">
-        <h3>Overview</h3>
+        <h3 style="color: #088C6F;">Overview</h3>
         <div class="chart-data">
   
         </div>
@@ -116,11 +119,20 @@
   
           $('.partial-head i').click(function(){
             var parent = $(this).parent().parent().parent();
+            var partialBody = $(this).parent().siblings();
+            var list = $(partialBody[0]).children().children();
+
+
 
             if(parent.hasClass('col-md-4 col-sm-6')){
               $(this).removeClass('fa-expand');
               $(this).addClass('fa-compress');
               parent.removeClass('col-md-4 col-sm-6');
+
+              for(var i=0;i<list.length;i++){
+                $(list[i]).append("<i class='fa fa-pencil'></i>")
+              }
+
             }
             else{
               $(this).removeClass('fa-compress');
