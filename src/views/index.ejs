@@ -26,7 +26,7 @@
       <div class="card container animated slideInLeft" id="overview">
         <h3 style="color: #088C6F;">Overview</h3>
         <div class="chart-data">
-  
+            <canvas id="chart" width="800px" height="200px"></canvas>
         </div>
       </div>
       <br>
@@ -43,14 +43,26 @@
               <ul>
                 <% for(var i=0;i<daily_journal.length;i++){%>
                   <% if(daily_journal[i].debit == 0){%>
-                    <li><b><%= daily_journal[i].particular %></b> from 
-                      <b><%= daily_journal[i].name %></b> of <b>&#8377;<%=daily_journal[i].credit%></b>
-                      &nbsp;on <b><%= new Date(daily_journal[i].Date).toDateString() %></b></li>
+                    <li>
+                      <div class="row">
+                      <div class="col-xs-12 inner-row">
+                        <b><%= daily_journal[i].particular %></b> from 
+                        <b><%= daily_journal[i].name %></b> of <b>&#8377;<%=daily_journal[i].credit%></b>
+                        &nbsp;on <b><%= new Date(daily_journal[i].Date).toDateString() %></b>
+                      </div>
+                      </div>
+                    </li>
                   <% } 
                   else{%>
-                    <li><b><%= daily_journal[i].particular %></b> from 
-                      <b><%= daily_journal[i].name %></b> of <b>&#8377;<%=daily_journal[i].debit%></b>
-                      &nbsp;on <b><%= new Date(daily_journal[i].Date).toDateString() %></b></li>
+                    <li>
+                      <div class="row">
+                      <div class="col-xs-12 inner-row">
+                        <b><%= daily_journal[i].particular %></b> to 
+                        <b><%= daily_journal[i].name %></b> of <b>&#8377;<%=daily_journal[i].debit%></b>
+                        &nbsp;on <b><%= new Date(daily_journal[i].Date).toDateString() %></b>
+                      </div>
+                      </div>
+                    </li>
                   <%}%>
                 <% } %>
 
@@ -112,16 +124,40 @@
     
     <!-- Latest compiled Bootstrap JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script src="controllers/script.js"></script>
     <script>
+      //Chart Data
+      var years = ["Creditors", "Debtors"];
+      // For drawing the lines
+      var africa = [10, 20];
+
+      //Handling Chart
+      var ctx = document.getElementById('chart').getContext('2d');
+      var chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              data: africa,
+              label: "Africa",
+              backgroundColor: ["#CF0A2C", "#81AE64"]
+            }
+          ]
+        },
         
+      })
+
         $(document).ready(function(){
   
           $('.partial-head i').click(function(){
             var parent = $(this).parent().parent().parent();
+            var heading = $(this).siblings().text();
             var partialBody = $(this).parent().siblings();
-            var list = $(partialBody[0]).children().children();
-
+            console.log(heading)
+            
+            //console.log(list)
 
 
             if(parent.hasClass('col-md-4 col-sm-6')){
@@ -129,15 +165,29 @@
               $(this).addClass('fa-compress');
               parent.removeClass('col-md-4 col-sm-6');
 
-              for(var i=0;i<list.length;i++){
-                $(list[i]).append("<i class='fa fa-pencil'></i>")
-              }
+              if(heading == 'Daily Journal'){
+                $('.inner-row').removeClass('col-xs-12');
+                $('.inner-row').addClass('col-xs-10');
 
+                $('.inner-row').parent().append(`
+                  <div class="col-xs-2">
+                    <i class="fa fa-pencil" style="color: #088C6F"></i>
+                    <i class="fa fa-trash" style="color: #DC4444"></i>
+                  </div>
+                `)
+              }
             }
             else{
               $(this).removeClass('fa-compress');
               $(this).addClass('fa-expand');
               parent.addClass('col-md-4 col-sm-6');
+
+              if(heading == 'Daily Journal'){
+                $('.inner-row').removeClass('col-xs-10');
+                $('.inner-row').addClass('col-xs-12');
+
+                $('.inner-row').siblings().remove()
+              }
               
             }
               

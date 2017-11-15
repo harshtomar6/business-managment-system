@@ -4,6 +4,18 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 
   $('#sidebar ul li').click(sideClick);
+
+  var child = $('#sidebar ul').children()
+  switch(window.location.pathname){
+    case '/':
+      $('#sidebar ul li').removeClass('selected');
+      $(child[0]).addClass('selected');
+      break;
+    case '/new-transaction':
+      $('#sidebar ul li').removeClass('selected');
+      $(child[1]).addClass('selected');
+      break;
+  }
 })
 
 function toggleSidebar(){
@@ -18,7 +30,7 @@ function sideClick(){
   //add CSS
   $('#sidebar ul li').removeClass('selected');
   $(this).addClass('selected');
-
+  
   var tab = $(this).first().text()
 
   switch(tab){

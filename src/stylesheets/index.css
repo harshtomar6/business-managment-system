@@ -73,6 +73,10 @@
   transform: scale(1.5);
 }
 
+.inner-row{
+  padding: 0 15px;
+}
+
 .partial-bottom{
   border-top: 1px solid rgba(0, 0, 0, 0.4);
   border-bottom-left-radius: 5px;
