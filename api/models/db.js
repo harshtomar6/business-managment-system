@@ -5,7 +5,8 @@ let connector = mysql.createConnection({
   host: '139.59.66.232',
   user: 'harsh',
   password: 'bjn721',
-  database: 'mine'
+  database: 'mine',
+  multipleStatements: true
 })
 
 //Connect to Database

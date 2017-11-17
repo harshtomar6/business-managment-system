@@ -8,16 +8,14 @@ let model = require('./../models/model');
 router.get('/', (req, res) => {
   
   if(req.session.loggedIn){
-    var query = 'select * from daily_journal';
+    var query = 'select * from daily_journal;';
+    query += 'select * from journal_entry;'
+
+    //model.updateLedger('Bank Account DR to Sales Account')
     
-    db.connector.query(query, (err, data1) => {
+    db.connector.query(query, (err, success) => {
       //console.log(success);
-      var query2 = 'select * from journal_entry';
-  
-      db.connector.query(query2, (err, data2) => {
-        res.render('index.ejs', {daily_journal: data1, journal_entry: data2})
-      })
-  
+      res.render('index.ejs', {daily_journal: success[0], journal_entry: success[1]})
     })
   }
   else
@@ -47,13 +45,13 @@ router.post('/login', (req, res) => {
       if(success.length > 0){
         if(password == success[0].password){
           req.session.loggedIn = success[0].id;
-          res.redirect('/');
+          res.send({err: false, msg: 'Login Successfull'});
         }
         else{
-          res.render('login.ejs', {msg: 'Incorrect Password'})
+          res.send({err: true, msg: 'Incorrect Password'})
         }
       }else{
-        res.render('login.ejs', {msg: 'User doesnot exist!'})
+        res.send({err: true, msg: 'User doesnot exist!'})
       }
     }
   })

@@ -63,6 +63,19 @@ let getJournalEntryParticular = (data) => {
   return particular;
 }
 
+let updateLedger = (data) => {
+  var date = data.date;
+  var debitAccount = data.particular.split('DR to')[0];
+  var creditAccount = data.particular.split('DR to ')[1];
+  var debit = data.debit;
+  var credit = data.credit;
+
+  
+
+
+}
+
 module.exports = {
-  getJournalEntryParticular
+  getJournalEntryParticular,
+  updateLedger
 }
