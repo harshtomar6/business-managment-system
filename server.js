@@ -1,6 +1,8 @@
 //Dependencies
 let express = require('express');
 let bodyParser = require('body-parser');
+let cookieParser = require('cookie-parser');
+let session = require('express-session');
 let db = require('./api/models/db');
 let model = require('./api/models/model');
 let homeRoute = require('./api/routes/homeRoute')
@@ -18,6 +20,12 @@ db.connect((err) => {
 
 // Initialize express app
 let app = express();
+
+//Use Cookie Parser
+app.use(cookieParser());
+
+//Use Express Sessions
+app.use(session({secret: 'idsffeiqie2132mkasmaodaa', resave: true, saveUninitialized: false}));
 
 //Body-parser to accept POST requests
 app.use(bodyParser.urlencoded({extended: false}));

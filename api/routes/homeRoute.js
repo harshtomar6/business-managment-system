@@ -7,26 +7,64 @@ let model = require('./../models/model');
 //Home Route
 router.get('/', (req, res) => {
   
-  var query = 'select * from daily_journal';
+  if(req.session.loggedIn){
+    var query = 'select * from daily_journal';
+    
+    db.connector.query(query, (err, data1) => {
+      //console.log(success);
+      var query2 = 'select * from journal_entry';
   
-  db.connector.query(query, (err, data1) => {
-    //console.log(success);
-
-    
-
-    var query2 = 'select * from journal_entry';
-
-    db.connector.query(query2, (err, data2) => {
-      res.render('index.ejs', {daily_journal: data1, journal_entry: data2})
+      db.connector.query(query2, (err, data2) => {
+        res.render('index.ejs', {daily_journal: data1, journal_entry: data2})
+      })
+  
     })
+  }
+  else
+    res.redirect('/login')
 
-    
+})
+
+//Login Route
+router.get('/login', (req, res) => {
+  if(!req.session.loggedIn)
+    res.render('login.ejs', {msg: ''});
+  else
+    res.redirect('/')
+})
+
+//Login POST Route
+router.post('/login', (req, res) => {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  var query = `select * from user where username='${username}'`;
+
+  db.connector.query(query, (err, success) => {
+    if(err)
+      res.send(err)
+    else{
+      if(success.length > 0){
+        if(password == success[0].password){
+          req.session.loggedIn = success[0].id;
+          res.redirect('/');
+        }
+        else{
+          res.render('login.ejs', {msg: 'Incorrect Password'})
+        }
+      }else{
+        res.render('login.ejs', {msg: 'User doesnot exist!'})
+      }
+    }
   })
 })
 
 //New Transaction route
 router.get('/new-transaction', (req, res) => {
-  res.render('addTransactions.ejs');
+  if(req.session.loggedIn)
+    res.render('addTransactions.ejs');
+  else
+    res.redirect('/login')
 })
 
 //New Post Transaction route
@@ -60,10 +98,6 @@ router.post('/new-transaction', (req, res) => {
     })
   })
   
-})
-
-router.get('/login', (req, res) => {
-  res.render('login.ejs');
 })
 
 
