@@ -43,8 +43,12 @@
 .partial-body{
   padding: 5% 2%;
   background: #fff;
-  max-height: 460px;
+  max-height: 400px;
   overflow: auto;
+}
+
+.partial-body::-webkit-scrollbar{
+  
 }
 
 .partial-body ul{

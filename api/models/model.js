@@ -1,3 +1,5 @@
+let db = require('./db');
+
 
 //Convert Daily Journal to Journal Entry
 let getJournalEntryParticular = (data) => {
@@ -63,15 +65,44 @@ let getJournalEntryParticular = (data) => {
   return particular;
 }
 
-let updateLedger = (data) => {
-  var date = data.date;
-  var debitAccount = data.particular.split('DR to')[0];
+let updateLedger = (data, callback) => {
+  var date = data.date
+  console.log("date = "+date)
+  var debitAccount = data.particular.split(' DR to')[0];
   var creditAccount = data.particular.split('DR to ')[1];
+  var debitParticular = 'To '+creditAccount;
+  var creditParticular = 'By '+debitAccount;
   var debit = data.debit;
   var credit = data.credit;
 
-  
+  debitAccount = debitAccount.split(' ').join('_').toLowerCase();
+  debitAccount = debitAccount.replace('/', '');
+  creditAccount = creditAccount.split(' ').join('_').toLowerCase();
+  creditAccount = creditAccount.replace('/', '')
 
+  //console.log(debitAccount)
+  //console.log(creditAccount)
+
+  var query = `create table if not exists ${debitAccount}(
+    id int primary key AUTO_INCREMENT,
+    date date,
+    particular varchar(100),
+    debit int,
+    credit int
+  );`;
+  query += `create table if not exists ${creditAccount}(
+    id int primary key AUTO_INCREMENT,
+    date date,
+    particular varchar(100),
+    debit int,
+    credit int
+  );`;
+  query += `insert into ${debitAccount} (date, particular, debit, credit) values ('${date}', '${debitParticular}', ${debit}, 0);`
+  query += `insert into ${creditAccount} (date, particular, debit, credit) values ('${date}', '${creditParticular}', 0, ${credit});`
+
+  db.connector.query(query, (err, success) => {
+    callback(err, success);
+  })
 
 }
 

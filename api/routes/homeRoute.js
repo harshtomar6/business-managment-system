@@ -8,10 +8,7 @@ let model = require('./../models/model');
 router.get('/', (req, res) => {
   
   if(req.session.loggedIn){
-    var query = 'select * from daily_journal;';
-    query += 'select * from journal_entry;'
-
-    //model.updateLedger('Bank Account DR to Sales Account')
+    var query = 'call homedata()';
     
     db.connector.query(query, (err, success) => {
       //console.log(success);
@@ -79,23 +76,35 @@ router.post('/new-transaction', (req, res) => {
     values ('${name}', '${particular}', '${description}', '${debit}', '${credit}', '${date}', '${type}')`;
 
   db.connector.query(query, (err, success) => {
-    var particular2 = model.getJournalEntryParticular({particular: particular, name: name, type: type})
-    var debit2 = debit != 0 ? debit: credit;
-    var credit2 = debit != 0 ? debit: credit;
 
-    var query2 = `insert into journal_entry(particular, description, debit, credit, date) 
-      values('${particular2}', '${description}', ${debit2}, ${credit2}, '${date}')`
-
-    db.connector.query(query2, (err, success2) => {
-      if(err){
-        console.log(err)
-        res.send("An error occured")
-      }
-      else
-        res.redirect('/')
-    })
-  })
+    if(err){
+      console.log(err)
+      res.send('An Error Occured');
+    }else{
+      var particular2 = model.getJournalEntryParticular({particular: particular, name: name, type: type})
+      var debit2 = debit != 0 ? debit: credit;
+      var credit2 = debit != 0 ? debit: credit;
   
+      var query2 = `insert into journal_entry(particular, description, debit, credit, date) 
+        values('${particular2}', '${description}', ${debit2}, ${credit2}, '${date}')`
+  
+      db.connector.query(query2, (err, success2) => {
+        if(err){
+          console.log(err)
+          res.send("An error occured")
+        }
+        else{
+          model.updateLedger({date: date, particular: particular2, debit: debit2, credit: credit2}, (err, success) => {
+            if(err){
+              console.log(err)
+              res.send("An error Occured");
+            }else
+              res.redirect('/');
+          });  
+        }
+      })
+    }
+  })
 })
 
 
