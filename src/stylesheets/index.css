@@ -47,6 +47,11 @@
   overflow: auto;
 }
 
+#ledgers{
+  height: auto;
+  max-height: none;
+}
+
 .partial-body::-webkit-scrollbar{
   
 }

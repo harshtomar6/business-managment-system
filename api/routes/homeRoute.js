@@ -12,7 +12,14 @@ router.get('/', (req, res) => {
     
     db.connector.query(query, (err, success) => {
       //console.log(success);
-      res.render('index.ejs', {daily_journal: success[0], journal_entry: success[1]})
+      res.render('index.ejs', {
+        daily_journal: success[0], 
+        journal_entry: success[1], 
+        sales_account: success[2],
+        purchase_account: success[3],
+        cash_account: success[5],
+        bank_account: success[4]
+       })
     })
   }
   else
@@ -105,6 +112,24 @@ router.post('/new-transaction', (req, res) => {
       })
     }
   })
+})
+
+//Route for deleteing entry
+router.post('/delete', (req, res) => {
+  var id = req.body.id;
+
+  query = `delete from daily_journal where id=${id};`
+  query += `delete from journal_entry where id=${id}`
+
+  db.connector.query(query, (err, success) => {
+    if(err){
+      console.log(err)
+      res.send({err: true, msg: err});
+    }else{
+      res.send({err: false, msg: 'done'})
+    }
+  })
+
 })
 
 

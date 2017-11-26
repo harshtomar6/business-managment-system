@@ -84,21 +84,23 @@ let updateLedger = (data, callback) => {
   //console.log(creditAccount)
 
   var query = `create table if not exists ${debitAccount}(
-    id int primary key AUTO_INCREMENT,
+    id int primary key,
     date date,
     particular varchar(100),
     debit int,
-    credit int
+    credit int,
+    foreign key (id) references journal_entry(id) on delete cascade
   );`;
   query += `create table if not exists ${creditAccount}(
-    id int primary key AUTO_INCREMENT,
+    id int primary key,
     date date,
     particular varchar(100),
     debit int,
-    credit int
+    credit int,
+    foreign key (id) references journal_entry(id) on delete cascade
   );`;
-  query += `insert into ${debitAccount} (date, particular, debit, credit) values ('${date}', '${debitParticular}', ${debit}, 0);`
-  query += `insert into ${creditAccount} (date, particular, debit, credit) values ('${date}', '${creditParticular}', 0, ${credit});`
+  query += `insert into ${debitAccount} (id, date, particular, debit, credit) values (LAST_INSERT_ID(), '${date}', '${debitParticular}', ${debit}, 0);`
+  query += `insert into ${creditAccount} (id, date, particular, debit, credit) values (LAST_INSERT_ID(), '${date}', '${creditParticular}', 0, ${credit});`
 
   db.connector.query(query, (err, success) => {
     callback(err, success);
