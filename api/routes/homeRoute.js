@@ -132,5 +132,31 @@ router.post('/delete', (req, res) => {
 
 })
 
+//Route for editing Transactions
+router.get('/edit', (req, res) => {
+  
+  var data = JSON.parse(req.query.data);
+
+  console.log(data)
+
+  res.render('edit.ejs', {
+    data: data
+  })
+})
+
+router.post('/edit', (req, res) => {
+  var id = req.body.id;
+
+  query = `select * from daily_journal where id=${id}`
+
+  db.connector.query(query, (err, success) => {
+    if(err){
+      console.log(err);
+      res.send({err: true, msg: err});
+    }else{
+      res.send({err: false, msg: success[0]});
+    }
+  })
+})
 
 module.exports = router;

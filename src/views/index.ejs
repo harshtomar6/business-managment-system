@@ -32,7 +32,7 @@
       <br>
       <!--Partials DIV -->
       <div class="container" id="sub-cards">
-        <div class="col-xs-12 col-md-6 col-sm-6" style="padding-left: 0">
+        <div class="col-xs-12 col-md-6 col-sm-6" style="padding-left: 0"><br><br>
           <div class="partial-wrap card animated slideInLeft">
             <div class="partial-head">
               <h5>Daily Journal</h5>
@@ -72,7 +72,7 @@
             <div class="partial-bottom"></div>
           </div>
         </div>
-        <div class="col-xs-12 col-md-6 col-sm-6" style="padding-right: 0" >
+        <div class="col-xs-12 col-md-6 col-sm-6" style="padding-right: 0" ><br><br>
           <div class="partial-wrap card animated slideInDown">
             <div class="partial-head">
               <h5>Journal Entry</h5>
@@ -103,7 +103,7 @@
             <div class="partial-bottom"></div>
           </div>
         </div>
-        <div class="col-xs-12 col-md-12 col-sm-12" style="padding-right: 0;">
+        <div class="col-xs-12 col-md-12 col-sm-12" style="padding-right: 0;"><br><br>
           <div class="partial-wrap card animated slideInRight">
             <div class="partial-head">
               <h5>Ledgers</h5>
@@ -117,7 +117,7 @@
                   <div class="partial-head">
                     <h5>Sales Account</h5>
                   </div>
-                  <div class="partial-body">
+                  <div class="sub-partial-body">
                     <table class="table table-striped table-hover">
                       <tr>
                         <th>Date</th>
@@ -145,7 +145,7 @@
               <div class="partial-head">
                 <h5>Purchase Account</h5>
               </div>
-              <div class="partial-body">
+              <div class="sub-partial-body">
                 <table class="table table-striped table-hover">
                   <tr>
                     <th>Date</th>
@@ -173,7 +173,7 @@
             <div class="partial-head">
               <h5>Bank Account</h5>
             </div>
-            <div class="partial-body">
+            <div class="sub-partial-body">
               <table class="table table-striped table-hover">
                 <tr>
                   <th>Date</th>
@@ -201,7 +201,7 @@
           <div class="partial-head">
             <h5>Cash Account</h5>
           </div>
-          <div class="partial-body">
+          <div class="sub-partial-body">
             <table class="table table-striped table-hover">
               <tr>
                 <th>Date</th>
@@ -283,7 +283,7 @@
 
                 $('.inner-row').parent().append(`
                   <div class="col-xs-2">
-                    <i class="fa fa-pencil" style="color: #088C6F"></i>
+                    <i class="fa fa-pencil" id="editBtn" style="color: #088C6F" onclick='handleEdit(event)'></i>
                     <i class="fa fa-trash" style="color: #DC4444" onclick='handleDelete(event)'></i>
                   </div>
                 `)
@@ -317,6 +317,19 @@
               alert(success.msg);
             }
               
+          })
+        }
+
+        function handleEdit(e){
+          var id = e.target.parentNode.parentNode.parentNode.id;
+
+          $.post('/edit', {id: id}, success => {
+            if(success.err)
+              alert('An Error Occured');
+            else{
+              var msg = success.msg
+              window.location.href = '/edit?data='+JSON.stringify(msg);
+            }
           })
         }
         
