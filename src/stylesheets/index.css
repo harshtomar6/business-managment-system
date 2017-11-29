@@ -3,6 +3,19 @@
   min-height: 400px;
 }
 
+.item{
+  height: 300px;
+}
+
+.carousel-control{
+  color: #088C6F;
+  background: none;
+}
+
+.left, .right{
+  background-image: none !important;
+}
+
 #sub-cards{
   padding: 0;
 }

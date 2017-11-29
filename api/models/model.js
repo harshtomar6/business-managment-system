@@ -108,7 +108,70 @@ let updateLedger = (data, callback) => {
 
 }
 
+let getAccounts = (data) => {
+
+  var accounts = [];
+
+  for(var i=0;i<data.length; i++){
+    
+    switch(data[i].Tables_in_mine){
+      case 'bank_account':
+      case 'cash_account':
+      case 'daily_journal':
+      case 'drawing_account':
+      case 'expenses_account':
+      case 'journal_entry':
+      case 'purchase_account':
+      case 'salary_account':
+      case 'sales_account':
+      case 'user':
+        break;
+      default:
+        accounts.push(data[i].Tables_in_mine);
+    }
+  }
+  
+  return accounts;
+}
+
+
+let isDebtorOrCreditor = (account, callback) => {
+  
+  query = `select sum(debit) "sumDebit", sum(credit) "sumCredit" from ${account};`
+
+  db.connector.query(query, (err, success) => {
+    if(err)
+      return callback('Err')
+    else{
+      //console.log(success[0]);
+      if(success[0].sumDebit > success[0].sumCredit)
+        return callback('Debtor');
+      else if(success[0].sumDebit < success[0].sumCredit)
+        return callback('Creditor');
+      else
+        return callback('None');
+    }    
+  })
+}
+
+let getDebtorsCount = (accounts, callback) => {
+  var debtor = 0;
+
+  accounts.forEach(account => {
+    isDebtorOrCreditor(account, (type) => {
+      //console.log(type)
+      if(type == 'Debtor')
+        debtor++;
+    });
+  }, () => {
+    callback(debtor)
+  })
+}
+
 module.exports = {
   getJournalEntryParticular,
-  updateLedger
+  updateLedger,
+  getAccounts,
+  isDebtorOrCreditor,
+  getDebtorsCount
 }

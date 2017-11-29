@@ -8,17 +8,38 @@ let model = require('./../models/model');
 router.get('/', (req, res) => {
   
   if(req.session.loggedIn){
-    var query = 'call homedata()';
+    var query = 'call homedata();'
+    query += 'select sum(debit) "sum" from bank_account;'
+    query += 'select sum(credit) "sum" from bank_account;'
+    query += 'select sum(debit) "sum" from cash_account;'
+    query += 'select sum(credit) "sum" from cash_account;'
+    query += 'show tables;'
     
     db.connector.query(query, (err, success) => {
       //console.log(success);
+
+      totalDebit = success[7][0].sum + success[9][0].sum;
+      totalCredit = success[8][0].sum + success[10][0].sum;
+
+      let accounts = model.getAccounts(success[11]);
+
+      var debtors=0, creditors=0;
+
+      model.getDebtorsCount(accounts, (count) => {
+        console.log(count);
+      })
+
       res.render('index.ejs', {
         daily_journal: success[0], 
         journal_entry: success[1], 
         sales_account: success[2],
         purchase_account: success[3],
         cash_account: success[5],
-        bank_account: success[4]
+        bank_account: success[4],
+        cashOutFlow: totalCredit,
+        cashInFlow: totalDebit,
+        debtors: debtors,
+        creditors: creditors
        })
     })
   }
