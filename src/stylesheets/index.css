@@ -58,6 +58,7 @@
   background: #fff;
   max-height: 400px;
   overflow-y: auto;
+  width: 100%;
 }
 
 .sub-partial-body{
